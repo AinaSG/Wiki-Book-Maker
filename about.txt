@@ -1,0 +1,6 @@
+Wiki Book Maker
+===========================
+
+Created by Aina Soler
+
+Requires calibre >= 0.7.53
