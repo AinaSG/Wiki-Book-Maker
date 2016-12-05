@@ -13,9 +13,21 @@ if False:
     # You do not need this code in your plugins
     get_icons = get_resources = None
 
-from PyQt5.Qt import QDialog, QVBoxLayout, QPushButton, QMessageBox, QLabel
+import re
+import os
+from urlparse import urlparse
+import urllib2
+import urllib
+
+from calibre_plugins.wiki_book.book_downloader import BookDownloader
+
+from PyQt5.Qt import QDialog, QGridLayout, QPushButton, QMessageBox, QLabel, QWidget, QVBoxLayout, QLineEdit, QIcon, QDialogButtonBox, QTimer, QScrollArea, QSize, QFormLayout
 
 from calibre_plugins.wiki_book.config import prefs
+import urllib
+
+#from urllib.request import Request, urlopen
+
 
 class DemoDialog(QDialog):
 
@@ -34,35 +46,53 @@ class DemoDialog(QDialog):
         self.l = QVBoxLayout()
         self.setLayout(self.l)
 
-        self.label = QLabel(prefs['hello_world_msg'])
-        self.l.addWidget(self.label)
+        #self.label = QLabel(prefs['hello_world_msg'])
+        #self.l.addWidget(self.label)
 
         self.setWindowTitle('Wiki Book Maker')
         self.setWindowIcon(icon)
+
+        self.helpl = QLabel(
+            'Click the button below. '
+            'It will generate a test ebook.')
+        self.helpl.setWordWrap(True)
+        self.l.addWidget(self.helpl)
+
+        self.w = QWidget(self)
+        self.sa = QScrollArea(self)
+        self.l.addWidget(self.sa)
+        self.w.l = QVBoxLayout()
+        self.w.setLayout(self.w.l)
+        self.sa.setWidget(self.w)
+        self.sa.setWidgetResizable(True)
 
         self.about_button = QPushButton('About', self)
         self.about_button.clicked.connect(self.about)
         self.l.addWidget(self.about_button)
 
-        self.marked_button = QPushButton(
-            'Show books with only one format in the calibre GUI', self)
-        self.marked_button.clicked.connect(self.marked)
-        self.l.addWidget(self.marked_button)
+        self.test_button = QPushButton('Test', self)
+        self.test_button.clicked.connect(self.testbook)
+        self.l.addWidget(self.test_button)
 
-        self.view_button = QPushButton(
-            'View the most recently added book', self)
-        self.view_button.clicked.connect(self.view)
-        self.l.addWidget(self.view_button)
+        #self.marked_button = QPushButton(
+        #    'Show books with only one format in the calibre GUI', self)
+        #self.marked_button.clicked.connect(self.marked)
+        #self.l.addWidget(self.marked_button)
 
-        self.update_metadata_button = QPushButton(
-            'Update metadata in a book\'s files', self)
-        self.update_metadata_button.clicked.connect(self.update_metadata)
-        self.l.addWidget(self.update_metadata_button)
+        #self.view_button = QPushButton(
+        #    'View the most recently added book', self)
+        #self.view_button.clicked.connect(self.view)
+        #self.l.addWidget(self.view_button)
 
-        self.conf_button = QPushButton(
-                'Configure this plugin', self)
-        self.conf_button.clicked.connect(self.config)
-        self.l.addWidget(self.conf_button)
+        #self.update_metadata_button = QPushButton(
+        #    'Update metadata in a book\'s files', self)
+        #self.update_metadata_button.clicked.connect(self.update_metadata)
+        #self.l.addWidget(self.update_metadata_button)
+
+        #self.conf_button = QPushButton(
+        #        'Configure this plugin', self)
+        #self.conf_button.clicked.connect(self.config)
+        #self.l.addWidget(self.conf_button)
 
         self.resize(self.sizeHint())
 
@@ -92,6 +122,12 @@ class DemoDialog(QDialog):
         # Tell the GUI to search for all marked records
         self.gui.search.setEditText('marked:true')
         self.gui.search.do_search()
+
+    def testbook(self):
+        #print("testing...")
+        myMaker = BookDownloader("firefox")
+        test_create_wiki_book(myMaker)
+        print("Done!")
 
     def view(self):
         ''' View the most recently added book '''
@@ -152,3 +188,18 @@ class DemoDialog(QDialog):
         self.do_user_config(parent=self)
         # Apply the changes
         self.label.setText(prefs['hello_world_msg'])
+
+    def test_create_wiki_book(app):
+        app.open_main_page()
+        app.create_book.click_create_book()
+        app.create_book.click_start_book_creator()
+        app.create_book.search_page("Stallman")
+        app.create_book.add_page_to_book()
+        app.create_book.search_page("FSF")
+        app.create_book.add_page_to_book()
+        app.create_book.show_book()
+        app.create_book.set_book_name_and_subtitle()
+        app.create_book.press_download_book()
+        file_name = app.create_book.download_to_computer()
+
+        print(file_name)

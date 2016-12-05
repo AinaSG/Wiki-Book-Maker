@@ -1,0 +1,57 @@
+#url = 'https://en.wikipedia.org/w/index.php?title=Special:Book&bookcmd=start_book_creator&referer=Main+Page' # Set destination URL here
+    #post_fields = urllib.urlencode({'confirm': 'yes'})     # Set POST fields here
+    #r= urllib2.Request(url,post_fields)
+    json = urllib2.urlopen(r).read().decode()
+    #print(json)
+    print("book started")
+    print("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
+    print("adding a book other way...")
+    post_fields = urllib.urlencode({'action': 'ajax','rs': 'wfAjaxCollectionAddArticle', 'rsargs[]':'0', 'rsargs[]':'Sally+J.+Clark', 'rsargs[]':'0'})     # Set POST fields here
+    url ='https://en.wikipedia.org/w/index.php'
+    r= urllib2.Request(url)
+    json = urllib2.urlopen(r).read().decode()
+    print("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
+    print("adding a book...")
+    url = 'https://en.wikipedia.org/w/index.php?title=Special:Book&bookcmd=add_article&arttitle=Second+German+Bundestag&oldid=0'
+    r= urllib2.Request(url)
+    json = urllib2.urlopen(r).read().decode()
+    #print(json
+    print("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
+
+    post_fields = urllib.urlencode({'writer': 'rdf2latex','bookcmd': 'render', 'returnto':'Special:Book'})     # Set POST fields here
+    r= urllib2.Request(url,post_fields)
+    json = urllib2.urlopen(r).read().decode()
+    #print(json)
+    part = 0
+    mykeytmp = ''
+    for i in json.split("collection_id"):
+        if (part!=0):
+            mykeytmp=mykeytmp+i
+        part = part + 1
+
+    part = 0
+    mykey = ''
+    for i in mykeytmp.split("&amp"):
+        if(part == 0):
+            mykey = i
+        part = part + 1
+
+    mykey = mykey[1:]
+    print("Key: " + mykey)
+
+    print("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
+
+    firstpartURL = "https://en.wikipedia.org/w/index.php?title=Special:Book&bookcmd=download&collection_id="
+    fakekey = "bc02a7157f112dfdb4123d47e0e2124079b86fdc"
+    #fakekey = "67a752ff76d69000826e8dd91c6b7822b2787a7e"
+    lastpartURL = "&writer=rdf2latex&return_to=Special%3ABook"
+
+    urlpdf = firstpartURL + mykey + lastpartURL
+
+    #r= urllib2.Request(urpdf)
+    #json = urllib2.urlopen(r).read().decode()
+    #print(json)
+
+    print(urlpdf)
+
+    urllib.urlretrieve (urlpdf, "buk.pdf")

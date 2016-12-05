@@ -1,0 +1,27 @@
+1-
+
+/w/index.php?title=Special:Book&bookcmd=book_creator&referer=Main+Page
+
+
+2-
+
+post a
+
+/w/index.php?title=Special:Book&bookcmd=start_book_creator&referer=Main+Page
+confirm="yes"
+
+3-
+
+per a cada pagina
+
+href="/w/index.php?title=Special:Book&bookcmd=add_article&arttitle=Jimmie+Johnson&oldid=0"
+
+4-
+
+post a
+
+/wiki/Special:Book
+
+writer=rdf2latex
+bookcmd=render
+returnto=Special:Book
